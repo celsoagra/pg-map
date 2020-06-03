@@ -2,12 +2,20 @@ package me.celso.agra.jdbcaudit.component;
 
 import static java.util.stream.Collectors.groupingBy;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.data.elasticsearch.client.ClientConfiguration;
+import org.springframework.data.elasticsearch.client.RestClients;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
@@ -49,8 +57,24 @@ public class AuditQueryComponent implements CommandLineRunner {
 						)
 						
 				);
+		
+		Map<String, Object> mapToJson = new HashMap<String, Object>();
+		mapToJson.
 		JSONObject json = new JSONObject(tables);
 		System.out.println(json);
+
+		ClientConfiguration clientConfiguration = ClientConfiguration.builder().connectedTo("localhost:9200").build();
+		RestHighLevelClient client = RestClients.create(clientConfiguration).rest();
+
+		IndexRequest request = new IndexRequest("database");
+		request.source(json, XContentType.JSON);
+
+		IndexResponse response = client.index(request, RequestOptions.DEFAULT);
+		String index = response.getIndex();
+		long version = response.getVersion();
+		
+		System.out.println(index);
+		System.out.println(version);
 	}
 	
 	
