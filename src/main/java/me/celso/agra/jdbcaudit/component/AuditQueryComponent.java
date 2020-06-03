@@ -1,10 +1,9 @@
 package me.celso.agra.jdbcaudit.component;
 
+import static java.util.stream.Collectors.groupingBy;
+
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import static java.util.stream.Collectors.groupingBy;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,19 +50,7 @@ public class AuditQueryComponent implements CommandLineRunner {
 						
 				);
 		JSONObject json = new JSONObject(tables);
-		
 		System.out.println(json);
-		
-//		Set<String> keys = tables.keySet();
-//		for (String key : keys) {
-//			System.out.println(tables.get(key));
-//		}
-		
-//		results.stream().collect(
-//				Collectors.groupingBy( l1 -> l1.get,
-//                Collectors.flatMapping(item -> item.getSubItems().stream(),
-//                        Collectors.groupingBy(SubItem::getKey2))));
-		
 	}
 	
 	
